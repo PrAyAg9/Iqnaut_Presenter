@@ -13,7 +13,7 @@ const TemplateManagement: React.FC = () => {
   const [templateToEdit, setTemplateToEdit] = useState<Template | null>(null);
 
   // Function to fetch templates from Firestore
-  const fetchTemplates = async () => {
+  const fetchTemplates = async (): Promise<void> => {
     try {
       const querySnapshot = await getDocs(collection(db, 'templates'));
       const templatesData = querySnapshot.docs.map(doc => ({
@@ -31,9 +31,8 @@ const TemplateManagement: React.FC = () => {
   }, []);
 
   // Handler for adding a template
-  const handleAddTemplate = async (newTemplate: Template) => {
+  const handleAddTemplate = async (newTemplate: Template): Promise<void> => {
     try {
-      // Remove id from the object before adding (Firestore generates its own)
       const { id, ...dataToAdd } = newTemplate;
       await addDoc(collection(db, 'templates'), dataToAdd);
       await fetchTemplates();
@@ -44,7 +43,7 @@ const TemplateManagement: React.FC = () => {
   };
 
   // Handler for editing a template
-  const handleEditSubmit = async (updatedTemplate: Template) => {
+  const handleEditSubmit = async (updatedTemplate: Template): Promise<void> => {
     if (!updatedTemplate.id) return;
     const templateRef = doc(db, 'templates', updatedTemplate.id);
     try {
@@ -59,7 +58,7 @@ const TemplateManagement: React.FC = () => {
   };
 
   // Handler for deleting a template
-  const handleDeleteTemplate = async (id: string) => {
+  const handleDeleteTemplate = async (id: string): Promise<void> => {
     try {
       await deleteDoc(doc(db, 'templates', id));
       setTemplates(prev => prev.filter(t => t.id !== id));
@@ -68,7 +67,6 @@ const TemplateManagement: React.FC = () => {
     }
   };
 
-  // Handler for when user clicks "Edit"
   const handleEditClick = (template: Template) => {
     setTemplateToEdit(template);
     setIsEditModalOpen(true);
@@ -89,8 +87,6 @@ const TemplateManagement: React.FC = () => {
           <span>+ Add Template</span>
         </button>
       </div>
-
-      {/* Table */}
       <div className="bg-white rounded-lg shadow">
         <table className="min-w-full">
           <thead>
@@ -111,14 +107,12 @@ const TemplateManagement: React.FC = () => {
                 <td className="px-6 py-4 text-sm text-gray-900">{template.serialNumber}</td>
                 <td className="px-6 py-4 text-sm">
                   <div className="flex space-x-3">
-                    {/* EDIT BUTTON */}
                     <button
                       className="text-blue-600 hover:text-blue-800"
                       onClick={() => handleEditClick(template)}
                     >
                       <Pencil size={18} />
                     </button>
-                    {/* DELETE BUTTON */}
                     <button
                       className="text-red-600 hover:text-red-800"
                       onClick={() => handleDeleteTemplate(template.id)}
@@ -133,19 +127,17 @@ const TemplateManagement: React.FC = () => {
         </table>
       </div>
 
-      {/* EDIT TEMPLATE MODAL */}
+      <AddTemplateModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddTemplate}
+      />
+
       <EditTemplateModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onSubmit={handleEditSubmit}
         templateToEdit={templateToEdit}
-      />
-      
-      {/* ADD TEMPLATE MODAL */}
-      <AddTemplateModal 
-        isOpen={isAddModalOpen} 
-        onClose={() => setIsAddModalOpen(false)}
-        onSubmit={handleAddTemplate}
       />
     </div>
   );

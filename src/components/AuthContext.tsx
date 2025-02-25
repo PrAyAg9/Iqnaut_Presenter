@@ -1,11 +1,11 @@
-// AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { auth } from '../../firebase'; // your Firebase config
+import { auth, db } from '../../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 interface AuthContextValue {
   user: User | null;
-  role: string | null; // 'admin' or 'presenter'
+  role: string | null;
   loading: boolean;
   logout: () => Promise<void>;
 }
@@ -23,18 +23,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // Listen for changes in Firebase Auth state
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
 
       if (currentUser) {
-        // HARD-CODED ROLE CHECK
-        // Make sure these emails exist in your Firebase Auth user list
-        if (currentUser.email === 'admin@test.com') {
-          setRole('admin');
-        } else if (currentUser.email === 'presenter@test.com') {
-          setRole('presenter');
-        } else {
+        try {
+          const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+          if (userDoc.exists()) {
+            const data = userDoc.data();
+            setRole(data.role); // Ensure data.role is "Admin" or "Presenter"
+          } else {
+            setRole(null);
+          }
+        } catch (error) {
+          console.error("Error fetching user role: ", error);
           setRole(null);
         }
       } else {
@@ -43,7 +45,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -51,17 +52,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await signOut(auth);
   };
 
-  const value: AuthContextValue = {
-    user,
-    role,
-    loading,
-    logout,
-  };
+  const value: AuthContextValue = { user, role, loading, logout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// Custom hook to use AuthContext
 export function useAuth() {
   return useContext(AuthContext);
 }

@@ -1,16 +1,15 @@
-// EditUserModal.tsx
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { User } from './UserManagement';
+import { User } from '../types';
 
-interface Props {
+interface EditUserModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (user: User) => void;
+  onSubmit: (user: User) => Promise<void>;
   user: User | null;
 }
 
-const EditUserModal = ({ isOpen, onClose, onSubmit, user }: Props) => {
+const EditUserModal: React.FC<EditUserModalProps> = ({ isOpen, onClose, onSubmit, user }) => {
   const [formData, setFormData] = useState<User | null>(user);
 
   useEffect(() => {
@@ -19,9 +18,9 @@ const EditUserModal = ({ isOpen, onClose, onSubmit, user }: Props) => {
 
   if (!isOpen || !formData) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    await onSubmit(formData);
     onClose();
   };
 
@@ -37,6 +36,7 @@ const EditUserModal = ({ isOpen, onClose, onSubmit, user }: Props) => {
 
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">
+            {/* ID (disabled) */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">ID</label>
               <input
@@ -46,29 +46,29 @@ const EditUserModal = ({ isOpen, onClose, onSubmit, user }: Props) => {
                 className="w-full px-3 py-2 border rounded-md bg-gray-100"
               />
             </div>
-
+            {/* Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
               <input
                 type="text"
-                value={formData.name}
                 required
-                className="w-full px-3 py-2 border rounded-md"
+                value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-3 py-2 border rounded-md"
               />
             </div>
-
+            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input
                 type="email"
-                value={formData.email}
                 required
-                className="w-full px-3 py-2 border rounded-md"
+                value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full px-3 py-2 border rounded-md"
               />
             </div>
-
+            {/* Role */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
               <div className="flex space-x-4 mt-2">

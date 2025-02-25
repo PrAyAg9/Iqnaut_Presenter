@@ -1,10 +1,28 @@
+// export interface Template {
+//   id: string;
+//   name: string;
+//   url: string;
+//   serialNumber: string;
+//   icon: string;
+// }
+
 export interface Template {
-  id: string;
+  id: string; 
   name: string;
   url: string;
   serialNumber: string;
-  icon: string;
+  icon: string; // This will be the Cloudinary image URL.
 }
+
+
+export interface NewTemplate {
+  name: string;
+  url: string;
+  serialNumber: string;
+  icon: string; 
+}
+
+
 
 // src/types.ts
 export interface User {
@@ -14,10 +32,11 @@ export interface User {
   role: 'Admin' | 'Presenter';
 }
 
-export interface Template {
-  id: string;
+
+
+export interface NewUser {
   name: string;
-  url: string;
-  serialNumber: string;
-  icon: string; // This is the image URL
+  email: string;
+  password: string;
+  role: 'Admin' | 'Presenter';
 }
