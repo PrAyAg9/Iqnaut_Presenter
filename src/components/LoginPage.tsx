@@ -78,13 +78,6 @@ const LoginPage: React.FC = () => {
           </button>
         </form>
 
-        {/* Signup Link */}
-        <p className="text-sm text-center mt-4">
-          Don't have an account?{' '}
-          <button onClick={() => navigate('/signup')} className="text-blue-600 hover:underline">
-            Sign up
-          </button>
-        </p>
       </div>
     </div>
   );
