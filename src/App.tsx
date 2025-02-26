@@ -6,7 +6,8 @@ import Navbar from './components/Navbar';
 import Login from './components/LoginPage';
 import Templates from './pages/templates'; 
 import Showcase from './pages/showcase';    
-import UserManagement from './pages/Users'; // Create if needed
+import UserManagement from './pages/Users'; 
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -23,14 +24,18 @@ function App() {
               {/* Login route */}
               <Route path="/login" element={<Login />} />
 
-              {/* Templates route */}
-              <Route path="/templates" element={<Templates />} />
+              <Route element={<ProtectedRoute />}>
 
-              {/* Showcase route */}
-              <Route path="/showcase" element={<Showcase />} />
+                {/* Templates route */}
+                <Route path="/templates" element={<Templates />} />
 
-              {/* User Management route */}
-              <Route path="/user-management" element={<UserManagement />} />
+                {/* Showcase route */}
+                <Route path="/showcase" element={<Showcase />} />
+
+                {/* User Management route */}
+                <Route path="/user-management" element={<UserManagement />} />
+              </Route>
+              
             </Routes>
           </main>
 
