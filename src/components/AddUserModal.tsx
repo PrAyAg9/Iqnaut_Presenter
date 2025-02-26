@@ -20,6 +20,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onSubmit }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Submitting formData:", formData);
     await onSubmit(formData);
     setFormData({
       name: '',

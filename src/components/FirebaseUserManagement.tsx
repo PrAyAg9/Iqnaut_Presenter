@@ -5,8 +5,7 @@ import EditUserModal from './EditUserModal';
 import { auth, db } from '../../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, getDocs, setDoc, doc, deleteDoc, updateDoc } from 'firebase/firestore';
-import { User } from '../types';
-import { NewUser } from '../types';
+import { User, NewUser } from '../types';
 
 const FirebaseUserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -14,7 +13,7 @@ const FirebaseUserManagement: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  // Function to fetch users from Firestore
+  // Fetch users from Firestore
   const fetchUsers = async (): Promise<void> => {
     try {
       const querySnapshot = await getDocs(collection(db, 'users'));
@@ -23,6 +22,7 @@ const FirebaseUserManagement: React.FC = () => {
         ...doc.data()
       })) as User[];
       setUsers(usersData);
+      console.log("Fetched users:", usersData);
     } catch (error) {
       console.error("Error fetching users: ", error);
     }
@@ -35,15 +35,18 @@ const FirebaseUserManagement: React.FC = () => {
   // Handler for adding a user
   const handleAddUser = async (userData: NewUser): Promise<void> => {
     try {
+      console.log("handleAddUser received:", userData);
       // Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
       const uid = userCredential.user.uid;
+      console.log("Created user with UID:", uid);
       // Save additional details in Firestore using uid as the document ID
       await setDoc(doc(db, 'users', uid), {
         name: userData.name,
         email: userData.email,
         role: userData.role,
       });
+      console.log("User details saved to Firestore");
       await fetchUsers();
       setIsAddModalOpen(false);
     } catch (error) {
@@ -54,12 +57,14 @@ const FirebaseUserManagement: React.FC = () => {
   // Handler for editing a user
   const handleEditUser = async (updatedUser: User): Promise<void> => {
     try {
+      if (!updatedUser.id) return;
       const userRef = doc(db, 'users', updatedUser.id);
       await updateDoc(userRef, {
         name: updatedUser.name,
         email: updatedUser.email,
         role: updatedUser.role,
       });
+      console.log("User updated:", updatedUser);
       await fetchUsers();
       setIsEditModalOpen(false);
       setSelectedUser(null);
@@ -68,10 +73,11 @@ const FirebaseUserManagement: React.FC = () => {
     }
   };
 
-  // Handler for deleting a user (Firestore only)
+  // Handler for deleting a user
   const handleDeleteUser = async (id: string): Promise<void> => {
     try {
       await deleteDoc(doc(db, 'users', id));
+      console.log("User deleted:", id);
       setUsers(prev => prev.filter(user => user.id !== id));
     } catch (error) {
       console.error("Error deleting user: ", error);
