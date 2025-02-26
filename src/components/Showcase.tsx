@@ -63,7 +63,7 @@ const Showcase: React.FC<ShowcaseProps> = ({ templates }) => {
             rel="noopener noreferrer"
             className="block bg-white rounded shadow hover:shadow-md transition-shadow duration-150 p-2"
           >
-            <div className="w-full h-40 overflow-hidden flex items-center justify-center">
+            <div className="w-full aspect-square overflow-hidden flex items-center justify-center">
               <img
                 src={template.icon}
                 alt={template.name}
