@@ -9,8 +9,9 @@ interface AddTemplateModalProps {
   onSubmit: (template: Template) => Promise<void>;
 }
 
-const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/ddk9ybgze/image/upload";
-const UPLOAD_PRESET = "prayag123"
+const CLOUDINARY_URL = import.meta.env.VITE_CLOUDINARY_URL;
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
 
 const AddTemplateModal: React.FC<AddTemplateModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const [formData, setFormData] = useState<Template>({

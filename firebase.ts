@@ -20,12 +20,12 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAAzHtylpenWIWISm8FCkw4mfI3XkWai7o",
-    authDomain: "dummy-43d19.firebaseapp.com",
-    projectId: "dummy-43d19",
-    storageBucket: "dummy-43d19.firebasestorage.app",
-    messagingSenderId: "73451904889",
-    appId: "1:73451904889:web:e48e8a44b8efd543ab99a8",
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
     measurementId: "G-MFKT5RLM7C"
   };;
 
