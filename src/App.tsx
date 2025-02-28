@@ -8,6 +8,7 @@ import Templates from './pages/templates';
 import Showcase from './pages/showcase';    
 import UserManagement from './pages/Users'; 
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminProtectedRoute from './components/AdminProtectedRoute';
 
 function App() {
   return (
@@ -26,14 +27,20 @@ function App() {
 
               <Route element={<ProtectedRoute />}>
 
-                {/* Templates route */}
-                <Route path="/templates" element={<Templates />} />
+
 
                 {/* Showcase route */}
                 <Route path="/showcase" element={<Showcase />} />
+                  
+                <Route element={<AdminProtectedRoute />}>
+                  {/* User Management route */}
+                  <Route path="/user-management" element={<UserManagement />} />
 
-                {/* User Management route */}
-                <Route path="/user-management" element={<UserManagement />} />
+                  {/* Templates route */}
+                  <Route path="/templates" element={<Templates />} />
+
+                </Route>
+
               </Route>
               
             </Routes>

@@ -7,13 +7,22 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, getDocs, setDoc, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { User, NewUser } from '../types';
 
+// Import functions to initialize a secondary app instance
+import { initializeApp } from 'firebase/app';
+import { getAuth, signOut as secondarySignOut } from 'firebase/auth';
+import {firebaseConfig} from '../../firebase'; // Make sure this points to your config
+
+// Initialize a secondary app and auth instance
+const secondaryApp = initializeApp(firebaseConfig, "Secondary");
+const secondaryAuth = getAuth(secondaryApp);
+
 const FirebaseUserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  // Fetch users from Firestore
+  // Function to fetch users from Firestore
   const fetchUsers = async (): Promise<void> => {
     try {
       const querySnapshot = await getDocs(collection(db, 'users'));
@@ -32,25 +41,32 @@ const FirebaseUserManagement: React.FC = () => {
     fetchUsers();
   }, []);
 
-  // Handler for adding a user
+  // Handler for adding a user using the secondary auth instance
   const handleAddUser = async (userData: NewUser): Promise<void> => {
     try {
       console.log("handleAddUser received:", userData);
-      // Create user in Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
+      // Create user using the secondary auth instance
+      const userCredential = await createUserWithEmailAndPassword(secondaryAuth, userData.email, userData.password);
       const uid = userCredential.user.uid;
       console.log("Created user with UID:", uid);
-      // Save additional details in Firestore using uid as the document ID
+      // Save additional details in Firestore using uid as document ID
       await setDoc(doc(db, 'users', uid), {
         name: userData.name,
         email: userData.email,
         role: userData.role,
       });
       console.log("User details saved to Firestore");
+      // Sign out the newly created user from the secondary auth so the main admin session remains
+      await secondarySignOut(secondaryAuth);
       await fetchUsers();
       setIsAddModalOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error adding user: ", error);
+      if (error.code === 'auth/email-already-in-use') {
+        alert("Email id already in use");
+      } else {
+        alert("Error adding user: " + error.message);
+      }
     }
   };
 
@@ -73,7 +89,7 @@ const FirebaseUserManagement: React.FC = () => {
     }
   };
 
-  // Handler for deleting a user
+  // Handler for deleting a user (Firestore only)
   const handleDeleteUser = async (id: string): Promise<void> => {
     try {
       await deleteDoc(doc(db, 'users', id));

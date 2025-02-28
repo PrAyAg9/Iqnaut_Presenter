@@ -9,10 +9,8 @@ interface EditTemplateModalProps {
   templateToEdit: Template | null;
 }
 
-
 const CLOUDINARY_URL = import.meta.env.VITE_CLOUDINARY_URL;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-
 
 const EditTemplateModal: React.FC<EditTemplateModalProps> = ({ isOpen, onClose, onSubmit, templateToEdit }) => {
   const [formData, setFormData] = useState<Template>({
@@ -81,17 +79,6 @@ const EditTemplateModal: React.FC<EditTemplateModalProps> = ({ isOpen, onClose, 
           </button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Template ID */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Template ID</label>
-            <input
-              type="text"
-              value={formData.id}
-              onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-              className="w-full px-3 py-2 border rounded-md"
-              required
-            />
-          </div>
           {/* Template Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Template Name</label>

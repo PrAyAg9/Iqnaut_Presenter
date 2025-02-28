@@ -29,7 +29,6 @@ const Navbar: React.FC = () => {
     };
   }, [isProfileOpen]);
 
-  // While loading, render nothing.
   if (loading) return null;
 
   // Render Navbar only if a user exists and the role is "Admin"
@@ -45,7 +44,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50">
+    <nav className="sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center h-16">
           {/* LEFT: Profile and navigation links for admin */}
@@ -57,8 +56,8 @@ const Navbar: React.FC = () => {
               <UserCircle size={20} />
             </button>
             {isProfileOpen && (
-              <div className="absolute top-12 left-0 bg-white border rounded shadow-lg p-3 w-48 z-10">
-                <div className="flex flex-col">
+              <div className="absolute top-12 left-0 rounded shadow-lg p-3 w-48 z-10">
+                <div className="flex flex-col bg-transparent">
                   <span className="text-sm font-medium">
                     {user.displayName || 'Unknown User'}
                   </span>

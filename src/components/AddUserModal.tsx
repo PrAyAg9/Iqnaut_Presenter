@@ -41,7 +41,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onSubmit }
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete="off">
           <div className="space-y-4">
             {/* Name */}
             <div>
@@ -52,6 +52,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onSubmit }
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full px-3 py-2 border rounded-md"
+                autoComplete="off"
               />
             </div>
             {/* Email */}
@@ -63,6 +64,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onSubmit }
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full px-3 py-2 border rounded-md"
+                autoComplete="off"
               />
             </div>
             {/* Password */}
@@ -74,6 +76,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, onSubmit }
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 className="w-full px-3 py-2 border rounded-md"
+                autoComplete="new-password"
               />
             </div>
             {/* Role */}

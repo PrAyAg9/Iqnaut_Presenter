@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Template } from '../types';
@@ -9,13 +8,13 @@ interface AddTemplateModalProps {
   onSubmit: (template: Template) => Promise<void>;
 }
 
+// Assuming you use environment variables for Cloudinary:
 const CLOUDINARY_URL = import.meta.env.VITE_CLOUDINARY_URL;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-
 const AddTemplateModal: React.FC<AddTemplateModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const [formData, setFormData] = useState<Template>({
-    id: '',
+    id: '', // Will be ignored/removed before adding to Firestore
     name: '',
     url: '',
     serialNumber: '',
@@ -65,8 +64,8 @@ const AddTemplateModal: React.FC<AddTemplateModalProps> = ({ isOpen, onClose, on
       alert("Please upload an image first.");
       return;
     }
+    // Call onSubmit; ignore formData.id since Firestore generates one.
     await onSubmit(formData);
-    // Reset form
     setFormData({ id: '', name: '', url: '', serialNumber: '', icon: '' });
     setSelectedFile(null);
     onClose();
@@ -83,17 +82,6 @@ const AddTemplateModal: React.FC<AddTemplateModalProps> = ({ isOpen, onClose, on
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Template ID */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Template ID</label>
-            <input
-              type="text"
-              value={formData.id}
-              onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-              className="w-full px-3 py-2 border rounded-md"
-              required
-            />
-          </div>
           {/* Template Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Template Name</label>

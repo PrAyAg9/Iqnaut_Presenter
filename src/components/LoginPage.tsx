@@ -15,10 +15,10 @@ const LoginPage: React.FC = () => {
     setError(null);
     setLoading(true);
 
-    // Hardcoded credentials check:
+    // Hardcoded credentials check
     if (email === "admin@123.com" && password === "admin") {
-      // Simulate successful login without Firebase
-      navigate('/showcase');
+      // For testing: simulate successful login with the hardcoded admin credentials.
+      navigate('/user-management');
       setLoading(false);
       return;
     }
@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen ">
+    <div className="flex items-center justify-center h-screen">
       {/* Shift the login card upward using transform */}
       <div className="transform -translate-y-8 bg-white p-6 rounded-lg shadow-md w-96">
         <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
@@ -71,13 +71,14 @@ const LoginPage: React.FC = () => {
           {/* Login Button */}
           <button
             type="submit"
-            className={`w-full px-4 py-2 rounded text-white font-semibold ${loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'}`}
             disabled={loading}
+            className={`w-full px-4 py-2 rounded text-white font-semibold ${
+              loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
+            }`}
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-
       </div>
     </div>
   );

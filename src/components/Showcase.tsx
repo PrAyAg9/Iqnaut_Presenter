@@ -4,6 +4,7 @@ import { Power } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase'; 
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../components/AuthContext'; // adjust path as needed
 
 interface ShowcaseProps {
   templates: Template[];
@@ -12,6 +13,7 @@ interface ShowcaseProps {
 const Showcase: React.FC<ShowcaseProps> = ({ templates }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const { role } = useAuth();
 
   // Filter templates based on search term
   const displayedTemplates = useMemo(() => {
@@ -20,7 +22,14 @@ const Showcase: React.FC<ShowcaseProps> = ({ templates }) => {
     );
   }, [templates, searchTerm]);
 
-  // Handle logout
+  // Sort by serial number (assuming serialNumber can be converted to a number)
+  const sortedTemplates = useMemo(() => {
+    return [...displayedTemplates].sort(
+      (a, b) => Number(a.serialNumber) - Number(b.serialNumber)
+    );
+  }, [displayedTemplates]);
+
+  // Handle logout (only for Presenter)
   const handleLogout = async () => {
     await signOut(auth);
     navigate('/login');
@@ -32,14 +41,16 @@ const Showcase: React.FC<ShowcaseProps> = ({ templates }) => {
       <div className="relative flex items-center justify-center mb-5">
         {/* Centered Heading */}
         <h1 className="text-2xl sm:text-3xl font-semibold">Showcase</h1>
-        {/* Logout Button on Extreme Right */}
-        <button
-          onClick={handleLogout}
-          className="absolute right-0 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md transition-all flex items-center gap-2"
-          title="Logout"
-        >
-          <Power size={20} />
-        </button>
+        {/* Conditionally display Logout Button only for Presenter */}
+        {role === 'Presenter' && (
+          <button
+            onClick={handleLogout}
+            className="absolute right-0 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md transition-all flex items-center gap-2"
+            title="Logout"
+          >
+            <Power size={20} />
+          </button>
+        )}
       </div>
 
       {/* Search Bar */}
@@ -55,7 +66,7 @@ const Showcase: React.FC<ShowcaseProps> = ({ templates }) => {
 
       {/* Responsive Grid Layout */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-9 gap-4">
-        {displayedTemplates.map((template) => (
+        {sortedTemplates.map((template) => (
           <a
             key={template.id}
             href={template.url}
